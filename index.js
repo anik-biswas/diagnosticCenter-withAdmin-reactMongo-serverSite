@@ -31,6 +31,7 @@ async function run() {
     const districtCollection = client.db('diagnosticCenterDB').collection('district');
     const bloodCollection = client.db('diagnosticCenterDB').collection('bloodGroup');
     const upazilaCollection = client.db('diagnosticCenterDB').collection('upazila');
+    const userCollection = client.db('diagnosticCenterDB').collection('user');
     app.get('/district',async(req,res)=>{
         const cursor = districtCollection.find();
         const result = await cursor.toArray();
@@ -45,6 +46,17 @@ async function run() {
         const cursor = upazilaCollection.find();
         const result = await cursor.toArray();
         res.send(result);
+    })
+    app.post('/user', async (req, res) => {
+        const user = req.body;
+        console.log(user);
+        const result = await userCollection.insertOne(user);
+        res.send(result);
+    });
+    app.get('/user', async (req, res) => {
+        const cursor = userCollection.find();
+        const users = await cursor.toArray();
+        res.send(users);
     })
 
     // Send a ping to confirm a successful connection
