@@ -29,15 +29,23 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     const districtCollection = client.db('diagnosticCenterDB').collection('district');
-
+    const bloodCollection = client.db('diagnosticCenterDB').collection('bloodGroup');
+    const upazilaCollection = client.db('diagnosticCenterDB').collection('upazila');
     app.get('/district',async(req,res)=>{
         const cursor = districtCollection.find();
         const result = await cursor.toArray();
         res.send(result);
     })
-
-
-
+    app.get('/bloodGroup',async(req,res)=>{
+        const cursor = bloodCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+    app.get('/upazila',async(req,res)=>{
+        const cursor = upazilaCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
    // await client.db("admin").command({ ping: 1 });
