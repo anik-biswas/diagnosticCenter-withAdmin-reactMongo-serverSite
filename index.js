@@ -34,7 +34,7 @@ async function run() {
     const bloodCollection = client.db('diagnosticCenterDB').collection('bloodGroup');
     const upazilaCollection = client.db('diagnosticCenterDB').collection('upazila');
     const userCollection = client.db('diagnosticCenterDB').collection('user');
-
+    const bannerCollection = client.db('diagnosticCenterDB').collection('banner');
     app.post('/jwt', async (req, res) => {
         const user = req.body;
 
@@ -82,6 +82,13 @@ async function run() {
         }
         console.log(user);
         const result = await userCollection.insertOne(user);
+        res.send(result);
+    });
+    app.post('/dashboard/addBanner', async (req, res) => {
+        
+        const banner = req.body;
+        console.log(banner);
+        const result = await bannerCollection.insertOne(banner);
         res.send(result);
     });
     app.get('/user', async (req, res) => {
