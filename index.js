@@ -99,6 +99,11 @@ async function run() {
         const users = await cursor.toArray();
         res.send(users);
     })
+    app.get('/dashboard/banner', async (req, res) => {
+            const cursor = bannerCollection.find();
+            const banners = await cursor.toArray();
+            res.send(banners);
+        })
     // app.get('/user', async (req, res) => {
     //     const authHeader = req.headers['authorization'];
     //     console.log(authHeader)
