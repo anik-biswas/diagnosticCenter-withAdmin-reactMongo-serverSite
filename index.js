@@ -49,6 +49,11 @@ async function run() {
     })
     app.post('/user', async (req, res) => {
         const user = req.body;
+        const query = {email:user.email};
+        const exitUser = await userCollection.findOne(query);
+        if(exitUser){
+            return res.send({message:'user already exit',insertedId:null})
+        }
         console.log(user);
         const result = await userCollection.insertOne(user);
         res.send(result);
