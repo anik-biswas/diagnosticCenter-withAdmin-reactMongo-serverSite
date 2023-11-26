@@ -35,6 +35,7 @@ async function run() {
     const upazilaCollection = client.db('diagnosticCenterDB').collection('upazila');
     const userCollection = client.db('diagnosticCenterDB').collection('user');
     const bannerCollection = client.db('diagnosticCenterDB').collection('banner');
+    const testCollection = client.db('diagnosticCenterDB').collection('test');
     app.post('/jwt', async (req, res) => {
         const user = req.body;
 
@@ -89,6 +90,13 @@ async function run() {
         const banner = req.body;
         console.log(banner);
         const result = await bannerCollection.insertOne(banner);
+        res.send(result);
+    });
+    app.post('/dashboard/addTest', async (req, res) => {
+        
+        const test = req.body;
+        console.log(test);
+        const result = await testCollection.insertOne(test);
         res.send(result);
     });
     app.get('/user', async (req, res) => {
@@ -161,6 +169,27 @@ async function run() {
         const result = await bannerCollection.deleteOne(query);
         res.send(result);
     })
+    app.patch('/dashboard/banner/toggle-active/:id', async (req, res) => {
+        const bannerId = req.params.id;
+        const { isActive } = req.body;
+      
+        try {
+            await bannerCollection.updateMany({}, { $set: { isActive: false } });
+          const result = await bannerCollection.updateOne(
+            { _id: new  ObjectId(bannerId) },
+            { $set: { isActive } }
+          );
+      
+          if (result.modifiedCount > 0) {
+            res.json({ success: true });
+          } else {
+            res.json({ success: false, error: 'Banner not found or not updated.' });
+          }
+        } catch (error) {
+          console.error('Error toggling isActive status:', error);
+          res.status(500).json({ success: false, error: 'Internal Server Error' });
+        }
+      });
     app.get('/user/email', async (req, res) => {
         const { email } = req.query;
 
