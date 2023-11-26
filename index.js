@@ -1,20 +1,22 @@
 const express = require('express');
 const app =express();
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
-// app.use(cors({
-//     origin: [
+app.use(cors({
+    // origin: [
        
-//         // 'https://findjob-a2605.web.app',
-//         // 'https://findjob-a2605.firebaseapp.com'
+    //     // 'https://findjob-a2605.web.app',
+    //     // 'https://findjob-a2605.firebaseapp.com'
     
-//     ], 
-//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//   }));
+    // ], 
+    // methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: ['Authorization', 'Content-Type'],
+  }));
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.265tqpu.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
@@ -32,6 +34,29 @@ async function run() {
     const bloodCollection = client.db('diagnosticCenterDB').collection('bloodGroup');
     const upazilaCollection = client.db('diagnosticCenterDB').collection('upazila');
     const userCollection = client.db('diagnosticCenterDB').collection('user');
+
+    app.post('/jwt', async (req, res) => {
+        const user = req.body;
+
+        const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+        res.send({ token });
+      })
+    //   const verifyToken = (req, res, next) => {
+    //     console.log('inside verify token', req.headers.authorization);
+        // if (!req.headers.authorization) {
+        //   return res.status(401).send({ message: 'unauthorized access' });
+        // }
+        // const token = req.headers.authorization.split(' ')[1];
+        // jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+        //   if (err) {
+        //     return res.status(401).send({ message: 'unauthorized access' })
+        //   }
+        //   req.decoded = decoded;
+        //   next();
+        // })
+    //     next();
+    //   }
+
     app.get('/district',async(req,res)=>{
         const cursor = districtCollection.find();
         const result = await cursor.toArray();
@@ -48,6 +73,7 @@ async function run() {
         res.send(result);
     })
     app.post('/user', async (req, res) => {
+        
         const user = req.body;
         const query = {email:user.email};
         const exitUser = await userCollection.findOne(query);
@@ -59,10 +85,39 @@ async function run() {
         res.send(result);
     });
     app.get('/user', async (req, res) => {
+    //     console.log('Request Headers:', req.headers);
+        const authHeader = req.headers;
+        console.log('Authorization Header:', authHeader);
         const cursor = userCollection.find();
         const users = await cursor.toArray();
         res.send(users);
     })
+    // app.get('/user', async (req, res) => {
+    //     const authHeader = req.headers['authorization'];
+    //     console.log(authHeader)
+    //     // Check if the Authorization header exists
+    //     if (!authHeader) {
+    //         return res.status(401).json({ message: 'Unauthorized access - Missing Authorization header' });
+    //     }
+    
+    //     // Extract the token from the Authorization header
+    //     const token = authHeader.split(' ')[1];
+    
+    //     try {
+    //         // Verify the token
+    //         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    
+    //         // The decoded variable now contains the payload of the token
+    //         // You can access user information from decoded
+    
+    //         const cursor = userCollection.find();
+    //         const users = await cursor.toArray();
+    //         res.send(users);
+    //     } catch (error) {
+    //         console.error(error);
+    //         res.status(401).json({ message: 'Unauthorized access - Invalid token' });
+    //     }
+    // });
 
     app.patch('/user/admin/:id',  async (req, res) => {
         const id = req.params.id;
