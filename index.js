@@ -112,6 +112,16 @@ async function run() {
             const banners = await cursor.toArray();
             res.send(banners);
         })
+        app.get('/active-banners', async (req, res) => {
+            try {
+                const activeBanners = await bannerCollection.find({ isActive: true }).toArray();
+                res.status(200).json({ success: true, banners: activeBanners });
+            } catch (error) {
+                console.error('Error fetching active banners:', error);
+                res.status(500).json({ success: false, error: 'Internal Server Error' });
+            }
+        });
+        
         app.get('/dashboard/test', async (req, res) => {
             const cursor = testCollection.find();
             const tests = await cursor.toArray();
@@ -202,7 +212,7 @@ async function run() {
         const result = await testCollection.updateOne(filter, test, options);
         res.json({ success: true, message: 'Application successful' });
     })
-    
+
     app.patch('/dashboard/banner/toggle-active/:id', async (req, res) => {
         const bannerId = req.params.id;
         const { isActive } = req.body;
