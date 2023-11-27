@@ -180,6 +180,29 @@ async function run() {
         const result = await testCollection.deleteOne(query);
         res.send(result);
     })
+    app.put('/dashboard/test/:id', async (req, res) => {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) }
+        const options = { upsert: true };
+        const updateTest = req.body;
+
+        const test = {
+            $set: {
+                
+                 name :updateTest.name,
+                 description:updateTest.description,
+                 testDate :updateTest.testDate,
+                price :updateTest.price,
+                slot :updateTest.slot,
+                testImg :updateTest.testImg
+                
+            }
+        }
+
+        const result = await testCollection.updateOne(filter, test, options);
+        res.json({ success: true, message: 'Application successful' });
+    })
+    
     app.patch('/dashboard/banner/toggle-active/:id', async (req, res) => {
         const bannerId = req.params.id;
         const { isActive } = req.body;
