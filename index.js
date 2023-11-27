@@ -112,6 +112,11 @@ async function run() {
             const banners = await cursor.toArray();
             res.send(banners);
         })
+        app.get('/dashboard/test', async (req, res) => {
+            const cursor = testCollection.find();
+            const tests = await cursor.toArray();
+            res.send(tests);
+        })  
     // app.get('/user', async (req, res) => {
     //     const authHeader = req.headers['authorization'];
     //     console.log(authHeader)
@@ -167,6 +172,12 @@ async function run() {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) };
         const result = await bannerCollection.deleteOne(query);
+        res.send(result);
+    })
+    app.delete('/dashboard/test/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await testCollection.deleteOne(query);
         res.send(result);
     })
     app.patch('/dashboard/banner/toggle-active/:id', async (req, res) => {
