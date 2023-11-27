@@ -14,19 +14,20 @@ app.use(cors({
     //     // 'https://findjob-a2605.firebaseapp.com'
     
     // ], 
-    // methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: ['Authorization', 'Content-Type'],
   }));
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.265tqpu.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    },
+    serverSelectionTimeoutMS: 60000, 
+  });
+  
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
@@ -121,12 +122,18 @@ async function run() {
                 res.status(500).json({ success: false, error: 'Internal Server Error' });
             }
         });
-        
+        //for dashboard
         app.get('/dashboard/test', async (req, res) => {
             const cursor = testCollection.find();
             const tests = await cursor.toArray();
             res.send(tests);
         })  
+        // fOR CLIENT SIDE
+        app.get('/test', async (req, res) => {
+            const cursor = testCollection.find();
+            const tests = await cursor.toArray();
+            res.send(tests);
+        })
     // app.get('/user', async (req, res) => {
     //     const authHeader = req.headers['authorization'];
     //     console.log(authHeader)
