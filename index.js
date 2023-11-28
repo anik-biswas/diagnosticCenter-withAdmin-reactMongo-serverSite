@@ -219,6 +219,24 @@ async function run() {
         const result = await userCollection.updateOne(filter, updatedDoc);
         res.send(result);
       })
+      app.patch('/reserve/:id', async (req, res) => {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) };
+        const options = { upsert: true };
+        const updateReserve = req.body;
+      
+        const reserveUpdate = {
+          $set: {
+            file: updateReserve.pdfLink, 
+            status: 'delivered',
+          },
+        };
+      
+        const result = await reserveCollection.updateOne(filter, reserveUpdate, options);
+      
+        res.json({ success: true, message: 'Application successful' });
+      });
+      
       app.get('/user/admin/:id', async (req, res) => {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) }
