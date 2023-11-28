@@ -219,6 +219,17 @@ async function run() {
         const result = await userCollection.updateOne(filter, updatedDoc);
         res.send(result);
       })
+      app.patch('/user/adminBlock/:id',  async (req, res) => {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) };
+        const updatedDoc = {
+          $set: {
+            status: 'blocked'
+          }
+        }
+        const result = await userCollection.updateOne(filter, updatedDoc);
+        res.send(result);
+      })
       app.patch('/reserve/:id', async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
@@ -238,6 +249,12 @@ async function run() {
       });
       
       app.get('/user/admin/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await userCollection.findOne(query);
+        res.send(result);
+    })
+    app.get('/user/adminBlock/:id', async (req, res) => {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) }
         const result = await userCollection.findOne(query);
