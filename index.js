@@ -38,6 +38,7 @@ async function run() {
     const userCollection = client.db('diagnosticCenterDB').collection('user');
     const bannerCollection = client.db('diagnosticCenterDB').collection('banner');
     const testCollection = client.db('diagnosticCenterDB').collection('test');
+    const reserveCollection = client.db('diagnosticCenterDB').collection('reserve');
     app.post('/jwt', async (req, res) => {
         const user = req.body;
 
@@ -108,6 +109,13 @@ async function run() {
         const banner = req.body;
         console.log(banner);
         const result = await bannerCollection.insertOne(banner);
+        res.send(result);
+    });
+    app.post('/reserve', async (req, res) => {
+        
+        const reserve = req.body;
+        console.log(reserve);
+        const result = await reserveCollection.insertOne(reserve);
         res.send(result);
     });
     app.post('/dashboard/addTest', async (req, res) => {
