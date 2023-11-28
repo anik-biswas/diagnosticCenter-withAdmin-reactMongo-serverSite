@@ -114,6 +114,17 @@ async function run() {
     app.post('/reserve', async (req, res) => {
         
         const reserve = req.body;
+        const testId = reserve.testId;
+            const test = await testCollection.findOne({ _id: new ObjectId(testId) });
+    
+            if (!test) {
+                return res.status(404).json({ success: false, message: 'test not found' });
+            }
+    
+            // decrement the appNumber and update the job
+            test.slot--;
+            await testCollection.updateOne({ _id: new ObjectId(testId) }, { $set: { slot: test.slot } });
+
         console.log(reserve);
         const result = await reserveCollection.insertOne(reserve);
         res.send(result);
