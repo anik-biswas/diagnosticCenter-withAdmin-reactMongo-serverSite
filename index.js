@@ -76,6 +76,11 @@ async function run() {
         const result = await cursor.toArray();
         res.send(result);
     })
+    app.get('/reserve',async(req,res)=>{
+        const cursor = reserveCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
     app.post('/user', async (req, res) => {
         
         const user = req.body;
@@ -225,6 +230,12 @@ async function run() {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) };
         const result = await userCollection.deleteOne(query);
+        res.send(result);
+    })
+    app.delete('/reserve/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await reserveCollection.deleteOne(query);
         res.send(result);
     })
     app.delete('/dashboard/banner/:id', async (req, res) => {
