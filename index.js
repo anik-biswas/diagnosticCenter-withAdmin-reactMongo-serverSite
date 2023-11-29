@@ -39,6 +39,7 @@ async function run() {
     const bannerCollection = client.db('diagnosticCenterDB').collection('banner');
     const testCollection = client.db('diagnosticCenterDB').collection('test');
     const reserveCollection = client.db('diagnosticCenterDB').collection('reserve');
+    const recomendationCollection = client.db('diagnosticCenterDB').collection('recomendation');
     app.post('/jwt', async (req, res) => {
         const user = req.body;
 
@@ -63,6 +64,11 @@ async function run() {
 
     app.get('/district',async(req,res)=>{
         const cursor = districtCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+    app.get('/recomendation',async(req,res)=>{
+        const cursor = recomendationCollection.find();
         const result = await cursor.toArray();
         res.send(result);
     })
