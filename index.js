@@ -225,6 +225,27 @@ async function run() {
         const result = await userCollection.updateOne(filter, updatedDoc);
         res.send(result);
       })
+      app.put('/userUpdate/:id', async (req, res) => {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) }
+        const options = { upsert: true };
+        const userUpdate = req.body;
+
+        const user = {
+            $set: {
+               
+                 name :userUpdate.name,
+                 blood :userUpdate.blood,
+                 district :userUpdate.district,
+                 upazila :userUpdate.upazila,
+                 email :userUpdate.email,
+                 
+            }
+        }
+
+        const result = await userCollection.updateOne(filter, user, options);
+        res.json({ success: true, message: 'Application successful' });
+    })
       app.patch('/user/adminBlock/:id',  async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
